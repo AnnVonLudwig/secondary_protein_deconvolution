@@ -1,0 +1,89 @@
+# 合成光谱数据生成器配置文件
+# 修改此文件来调整数据生成参数，无需修改代码
+
+# 波数网格参数
+wavenumber:
+  min: 1570.0      # 最小波数 (cm⁻¹)
+  max: 1730.0      # 最大波数 (cm⁻¹)
+  step: 0.1        # 波数步长 (cm⁻¹)
+
+# 包络构建参数
+envelope:
+  subpeaks_range: [3, 5]           # 每个标准中心的洛伦兹峰数范围
+  amplitude_range: [0.8, 1.2]      # 包络振幅因子范围
+  lorentz_fwhm_range: [8.0, 14.0]  # 均匀线宽范围 (cm⁻¹)
+
+# 峰数控制参数
+peak_control:
+  total_peaks_range: [8, 15]       # 总峰数范围
+  component_peaks:
+    alpha_helix: [1, 1]            # α-螺旋峰数范围（固定1个）
+    beta_sheet: [2, 4]             # β-折叠峰数范围
+    beta_turn: [1, 3]              # β-转角峰数范围
+    other_peaks: [4, 7]            # 其他峰数范围
+  validation:
+    check_overlap: true            # 是否检查峰重叠
+    min_separation: 5.0            # 最小峰间距 (cm⁻¹)
+    enforce_total: true            # 是否强制总峰数等于各组分峰数之和
+  other_peaks:
+    regions:
+      - [1575.0, 1610.0]          # 低波数区域
+      - [1645.0, 1660.0]          # 中间区域 (α-螺旋周围)
+      - [1715.0, 1720.0]          # 高波数区域
+    amplitude_ratio: [0.2, 0.4]    # 相对于主峰的振幅比范围
+    fwhm_range: [6.0, 12.0]        # 线宽范围 (cm⁻¹)
+    distribution_strategy: "random" # 峰分布策略: "random", "uniform", "weighted"
+    region_weights: [0.4, 0.3, 0.3] # 各区域的权重
+
+# 高斯展宽参数
+broadening:
+  gauss_fwhm_range: [0.5, 1.5]     # 仪器展宽范围 (cm⁻¹)
+  doppler_fwhm_range: [0.2, 0.6]   # 多普勒展宽范围 (cm⁻¹)
+
+# 噪声参数
+noise:
+  detector_noise_std: 0.008        # 检测器噪声标准差 (相对于最大振幅的分数)
+  micro_perturbation_std: 0.02     # 微扰动标准差 (相对于峰值的分数)
+
+# 基线漂移参数
+baseline_drift:
+  amplitude: 0.02                  # 最大信号振幅的分数
+  period: 200.0                    # 基线漂移的cm⁻¹周期
+  random_drift_std: 0.01           # 随机漂移标准差
+
+# 标准峰值定义
+peaks:
+  alpha_helix:
+    center: 1656.0
+    tolerance: 2.0
+  
+  beta_sheet:
+    - [1624.0, 1.0]
+    - [1627.0, 2.0]
+    - [1633.0, 2.0]
+    - [1638.0, 2.0]
+    - [1642.0, 1.0]
+    - [1691.0, 2.0]
+    - [1696.0, 2.0]
+  
+  beta_turn:
+    - [1667.0, 1.0]
+    - [1675.0, 1.0]
+    - [1680.0, 2.0]
+    - [1685.0, 2.0]
+
+
+# 数据集生成参数
+dataset:
+  n_samples: 10000                 # 生成样本数量
+  output_filename: "dataset2.npz"  # 输出文件名
+  random_seed: null                  # 随机种子 (None表示随机)
+  peak_allocation_strategy: "balanced"  # 峰数分配策略: "balanced", "random", "fixed"
+  allow_peak_adjustment: true      # 是否允许自动调整峰数以满足总峰数要求
+
+# 可视化参数
+visualization:
+  style: "seaborn-v0_8"            # 绘图样式
+  palette: "husl"                  # 颜色调色板
+  figure_size: [15, 10]            # 图形大小 [宽度, 高度]
+  dpi: 100                         # 图形分辨率
