@@ -1,0 +1,2 @@
+Sample	Beta_Alpha_Ratio
+1360-1800-4_smoothed	6.389056

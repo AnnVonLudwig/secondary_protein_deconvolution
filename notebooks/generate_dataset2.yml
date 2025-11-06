@@ -1,0 +1,78 @@
+# 合成光谱数据生成器配置文件 - 版本2
+# 新的分类结构：alpha_helix, beta_sheet, random, coils
+
+# 波数网格参数
+wavenumber:
+  min: 1600.0      # 最小波数 (cm⁻¹) - 更新为1600
+  max: 1730.0      # 最大波数 (cm⁻¹)
+  step: 0.1        # 波数步长 (cm⁻¹)
+
+# 包络构建参数
+envelope:
+  subpeaks_range: [3, 5]           # 每个标准中心的洛伦兹峰数范围
+  amplitude_range: [0.8, 1.2]      # 包络振幅因子范围
+  lorentz_fwhm_range: [8.0, 14.0]  # 均匀线宽范围 (cm⁻¹)
+
+# 峰数控制参数
+peak_control:
+  total_peaks_range: [8, 15]       # 总峰数范围
+  component_peaks:
+    alpha_helix: [1, 1]            # α-螺旋峰数范围（固定1个）
+    beta_sheet: [2, 2]             # β-折叠峰数范围（两个区域各1个）
+    random: [1, 2]                 # 随机峰数范围
+    coils: [1, 2]                  # 螺旋峰数范围
+  validation:
+    check_overlap: true            # 是否检查峰重叠
+    min_separation: 5.0            # 最小峰间距 (cm⁻¹)
+    enforce_total: true            # 是否强制总峰数等于各组分峰数之和
+
+# 高斯展宽参数
+broadening:
+  gauss_fwhm_range: [0.5, 1.5]     # 仪器展宽范围 (cm⁻¹)
+  doppler_fwhm_range: [0.2, 0.6]   # 多普勒展宽范围 (cm⁻¹)
+
+# 噪声参数
+noise:
+  detector_noise_std: 0.008        # 检测器噪声标准差 (相对于最大振幅的分数)
+  micro_perturbation_std: 0.02     # 微扰动标准差 (相对于峰值的分数)
+
+# 基线漂移参数
+baseline_drift:
+  amplitude: 0.02                  # 最大信号振幅的分数
+  period: 200.0                    # 基线漂移的cm⁻¹周期
+  random_drift_std: 0.01           # 随机漂移标准差
+
+# 标准峰值定义 - 新的分类结构
+peaks:
+  alpha_helix:
+    center: 1652.5                 # 1648-1657的中心
+    tolerance: 4.5                 # 1648-1657的范围
+  
+  beta_sheet:
+    # 第一个区域：1623-1641
+    - [1632.0, 9.0]               # 1623-1641的中心和范围
+    # 第二个区域：1674-1695  
+    - [1684.5, 10.5]              # 1674-1695的中心和范围
+  
+  random:
+    center: 1649.5                 # 1642-1657的中心
+    tolerance: 7.5                 # 1642-1657的范围
+  
+  coils:
+    center: 1674.0                 # 1662-1686的中心
+    tolerance: 12.0                # 1662-1686的范围
+
+# 数据集生成参数
+dataset:
+  n_samples: 10000                 # 生成样本数量
+  output_filename: "dataset2_new.npz"  # 输出文件名
+  random_seed: null                  # 随机种子 (None表示随机)
+  peak_allocation_strategy: "balanced"  # 峰数分配策略: "balanced", "random", "fixed"
+  allow_peak_adjustment: true      # 是否允许自动调整峰数以满足总峰数要求
+
+# 可视化参数
+visualization:
+  style: "seaborn-v0_8"            # 绘图样式
+  palette: "husl"                  # 颜色调色板
+  figure_size: [15, 10]            # 图形大小 [宽度, 高度]
+  dpi: 100                         # 图形分辨率
